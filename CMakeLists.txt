@@ -52,7 +52,15 @@ file(RELATIVE_PATH BxDecay0_LIBDIR_TO_PREFIX
 option(BXDECAY0_INSTALL_DBD_GA_DATA "Install BxDecay0 DBD gA process data" OFF)
 
 # - Dependencies
-find_package(GSL 2.4 REQUIRED)
+find_package(GSL 2.4)
+if(NOT GSL_FOUND)
+  include(FindPkgConfig)
+  pkg_check_modules(gslpkg REQUIRED gsl>2.4)
+  add_library(GSL ALIAS Pkgconfig::gslpkg)
+endif()
+if(NOT GSL_FOUND)
+  message(SEND_ERROR "could not find GSL with find_package nor with pkgconfig")
+endif()
 
 # - Publish headers
 configure_file(bxdecay0/version.h.in
